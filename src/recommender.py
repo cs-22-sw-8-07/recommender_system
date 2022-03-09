@@ -20,11 +20,18 @@ class Recommender:
 
     def get_songs(self, auth_token: str, playlist_id: str):
         # Retrieve tracks from the given playlist, only return the track id
-        result = self._sp.playlist_items(playlist_id, fields="items(track(id))", limit=10)
+        result = self._sp.playlist_items(playlist_id, limit=10)
 
         # Find the track ID of every track in the dict, and add them to an array
         ids = []
         for i in result["items"]:
-            ids.append(i["track"]["id"])
+            dict = {
+                "name": i["track"]["name"],
+                "artists": i["track"]["artists"],
+                "images": i["track"]["album"]["images"],
+                "id": i["track"]["id"]
+            }
+            #name, artist, cover art, id
+            ids.append(dict)
 
         return ids
