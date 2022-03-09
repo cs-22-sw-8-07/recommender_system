@@ -4,14 +4,14 @@ from recommender import Recommender
 
 
 def _load_config() -> configparser.ConfigParser:
-    base_folder = os.path.dirname(os.path.abspath(__file__))
+    base_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
+    config_file = os.path.join(base_folder, "config.cnf")
 
-    config_file = "config.cnf"
     if not os.path.exists(config_file) or not os.path.isfile(config_file):
-        print(f"Config file missing... Path should be {os.getcwd()}/config.cfg")
+        print(f"Config file missing... Path should be {config_file}")
 
     config = configparser.ConfigParser()
-    config.read(os.path.join(base_folder, config_file), encoding='utf-8')
+    config.read(config_file, encoding='utf-8')
 
     return config
 
