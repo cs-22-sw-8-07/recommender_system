@@ -1,10 +1,12 @@
-import configparser
+import json
+
 import spotipy
+from configparser import ConfigParser
 from spotipy.oauth2 import SpotifyClientCredentials
 
 
 class Recommender:
-    def __init__(self, config: configparser.ConfigParser):
+    def __init__(self, config: ConfigParser):
         self._config = config
         self._client_id = self._config.get('RECOMMENDER', 'client_id')
         self._client_secret = self._config.get('RECOMMENDER', 'client_secret')
@@ -23,15 +25,34 @@ class Recommender:
         result = self._sp.playlist_items(playlist_id, limit=10)
 
         # Find the track ID of every track in the dict, and add them to an array
-        ids = []
-        for i in result["items"]:
-            dict = {
-                "name": i["track"]["name"],
-                "artists": i["track"]["artists"],
-                "images": i["track"]["album"]["images"],
-                "id": i["track"]["id"]
+        tracks = []
+        for item in result["items"]:
+            artist_list = []
+            for artist in item["track"]["artists"]:
+                artist_list.append(artist["name"])
+            artists = ", ".join(artist_list)
+
+            images = item["track"]["album"]["images"]
+            images_sorted = sorted(images, key=lambda d: d["width"])
+            image_url = images_sorted[0]["url"]
+            
+            track_dict = {
+                "id": item["track"]["id"],
+                "name": item["track"]["name"],
+                "artist": artists,
+                "image": image_url
             }
             #name, artist, cover art, id
-            ids.append(dict)
+            tracks.append(track_dict)
 
-        return ids
+        parsed_result = {
+            "result": {
+                "id": "placeholder",
+                "location_type": "placeholder",
+                "tracks": tracks
+            },
+            "is_successful": "placeholder",
+            "error_no": 0
+        }
+
+        return json.dumps(parsed_result, indent=4)
