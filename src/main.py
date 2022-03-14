@@ -19,7 +19,6 @@ def _load_config() -> Optional[ConfigParser]:
 
     return config
 
-
 def main(args):
     config = _load_config()
     if config is None:
@@ -27,12 +26,14 @@ def main(args):
 
     rec = Recommender(config)
 
-    playlist_id = rec.find_playlist_id("", "forest")
-    songs_json = rec.get_songs("", playlist_id)
+    rec.connect_spotify(args[0])
+    playlist_id = rec.find_playlist_id(args[1])
+    songs_json = rec.get_songs(playlist_id)
     print(songs_json)
 
     return 0
 
 
 if __name__ == "__main__":
-    main(sys.argv[1:])
+    #main(sys.argv[1:])
+    main(["bla", "beach"])
