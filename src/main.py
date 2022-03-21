@@ -37,7 +37,7 @@ def main(args):
     if config is None:
         return 0
 
-    location = QuackLocationTypes(int(args[1]))
+    location = QuackLocationType(int(args[1]))
 
     rec = Recommender(config)
     rec.connect_spotify(args[0])
