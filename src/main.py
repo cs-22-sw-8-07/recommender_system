@@ -4,6 +4,18 @@ import sys, getopt
 from configparser import ConfigParser
 from typing import Optional
 from recommender import Recommender
+from enum import Enum
+
+
+class QuackLocationType(Enum):
+    unknown = 0
+    church = 1
+    education = 2
+    cemetery = 3
+    forest = 4
+    beach = 5
+    urban = 6
+    night_life = 7
 
 
 def _load_config() -> Optional[ConfigParser]:
@@ -19,15 +31,17 @@ def _load_config() -> Optional[ConfigParser]:
 
     return config
 
+
 def main(args):
     config = _load_config()
     if config is None:
         return 0
 
-    rec = Recommender(config)
+    location = QuackLocationTypes(int(args[1]))
 
+    rec = Recommender(config)
     rec.connect_spotify(args[0])
-    playlist_id = rec.find_playlist_id(args[1])
+    playlist_id = rec.find_playlist_id(location.name)
     songs_json = rec.get_songs(playlist_id)
     print(songs_json)
 
