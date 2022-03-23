@@ -38,13 +38,9 @@ def main(args):
         return 0
 
     location = QuackLocationType(int(args[1]))
-
-    rec = Recommender(config)
-    rec.connect_spotify(args[0])
-    playlist_id = rec.find_playlist_id(location.name)
-    songs_json = rec.get_songs(playlist_id)
-    print(songs_json)
-
+    rec = Recommender()
+    result = rec.get_playlist(args[0], location.name)
+    print(result)
     return 0
 
 

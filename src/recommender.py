@@ -1,39 +1,33 @@
 import json
-import spotipy
-from configparser import ConfigParser
-from spotipy.oauth2 import SpotifyClientCredentials
+from spotify import Spotify
+from service_response import service_response_error_json
+from service_response import Errors
 
 
 class Recommender:
-    def __init__(self, config: ConfigParser):
-        self._config = config
-        self._test_mode = self._config.getboolean('RECOMMENDER', 'test_mode')
-        self._client_id = self._config.get('RECOMMENDER', 'client_id')
-        self._client_secret = self._config.get('RECOMMENDER', 'client_secret')
-        self._sp = None
+    def get_playlist(self, auth_token, location):
+        error_no = 0
 
-    def connect_spotify(self, auth_token: str):
-        if self._sp is None:
-            # Authorize via spotify and save the auth token in _sp
-            if self._test_mode:
-                auth_manager = SpotifyClientCredentials(client_id=self._client_id, client_secret=self._client_secret)
-                auth_token = auth_manager.get_access_token()["access_token"]
+        try:
+            error_no = Errors.CouldNotInitializeSpotipy
+            spotify = Spotify(auth_token)
 
-            self._sp = spotipy.Spotify(auth=auth_token)
+            error_no = Errors.CouldNotFindPlaylists
+            playlists = spotify.find_playlists(location, 1)
 
-    def find_playlist_id(self, location: str):
-        # Search for the term "location" and return the first playlist
-        result = self._sp.search(location, type="playlist", limit=1)
-        # Find the ID of the playlist (nested dict)
-        return result["playlists"]["items"][0]["id"]
+            error_no = Errors.CouldNotFindSongsFromPlaylist
+            playlist_id = playlists["playlists"]["items"][0]["id"]
+            song_list = spotify.find_songs(playlist_id, 10)
 
-    def get_songs(self, playlist_id: str):
-        # Retrieve tracks from the given playlist, only return the track id
-        result = self._sp.playlist_items(playlist_id, limit=10)
+            error_no = Errors.CouldNotFormatSongListToJson
+            return self.get_playlist_json(song_list)
+        except:
+            return service_response_error_json(error_no.value)
 
+    def get_playlist_json(self, song_list):
         # Find the track ID of every track in the dict, and add them to an array
         tracks = []
-        for item in result["items"]:
+        for item in song_list["items"]:
             # Add all artists to one string, comma seperated
             artist_list = []
             for artist in item["track"]["artists"]:
@@ -60,7 +54,7 @@ class Recommender:
                 "location_type": "placeholder",
                 "tracks": tracks
             },
-            "is_successful": "placeholder",
+            "is_successful": 1,
             "error_no": 0
         }
 
