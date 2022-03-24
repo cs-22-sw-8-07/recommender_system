@@ -5,6 +5,7 @@ from configparser import ConfigParser
 from typing import Optional
 from recommender import Recommender
 from enum import Enum
+from service_response import Errors, service_response_error_json
 
 
 class QuackLocationType(Enum):
@@ -37,7 +38,15 @@ def main(args):
     if config is None:
         return 0
 
-    location = QuackLocationType(int(args[1]))
+    error_no = 0
+    try:
+        error_no = Errors.QuackLocationTypeNotWithinRange
+        location = QuackLocationType(int(args[1]))
+    except:
+        print(service_response_error_json(error_no.value))
+        sys.exit()
+
+
     rec = Recommender()
     result = rec.get_playlist(args[0], location.name)
     print(result)
