@@ -3,7 +3,6 @@ bin
 .idea
 
 .cache
-config.cnf
 *.lock
 *.db
 *.db-journal

@@ -1,18 +1,22 @@
 import json
 import sys
 from spotify import Spotify
+from configparser import ConfigParser
 from service_response import service_response_error_json
 from service_response import Errors
 from service_response import service_response_playlist_json
 
 
 class Recommender:
+    def __init__(self, config: ConfigParser):
+        self._config = config
+
     def get_playlist(self, auth_token, location):
         error_no = 0
 
         try:
             error_no = Errors.CouldNotInitializeSpotipy
-            spotify = Spotify(auth_token)
+            spotify = Spotify(self._config, auth_token)
 
             error_no = Errors.CouldNotFindPlaylists
             playlists = spotify.find_playlists(location, 1)
@@ -51,4 +55,4 @@ class Recommender:
             }
             tracks.append(track_dict)
 
-            return service_response_playlist_json(tracks, location)
+        return service_response_playlist_json(tracks, location)

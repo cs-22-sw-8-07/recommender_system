@@ -24,7 +24,6 @@ def _load_config() -> Optional[ConfigParser]:
     config_file = os.path.join(base_folder, "config.cnf")
 
     if not os.path.exists(config_file) or not os.path.isfile(config_file):
-        print(f"Config file missing... Path should be {config_file}")
         return None
 
     config = configparser.ConfigParser()
@@ -36,7 +35,8 @@ def _load_config() -> Optional[ConfigParser]:
 def main(args):
     config = _load_config()
     if config is None:
-        return 0
+        print(service_response_error_json(Errors.NoConfigFile))
+        sys.exit()
 
     error_no = 0
     try:
@@ -46,8 +46,7 @@ def main(args):
         print(service_response_error_json(error_no.value))
         sys.exit()
 
-
-    rec = Recommender()
+    rec = Recommender(config)
     result = rec.get_playlist(args[0], location.name)
     print(result)
     return 0

@@ -4,6 +4,7 @@ from enum import Enum
 
 
 class Errors(Enum):
+    NoConfigFile = 105
     CouldNotInitializeSpotipy = 110
     CouldNotFindPlaylists = 111
     CouldNotFindSongsFromPlaylist = 112
