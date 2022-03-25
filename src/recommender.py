@@ -1,35 +1,28 @@
-import json
-import sys
-from spotify import Spotify
-from configparser import ConfigParser
-from service_response import service_response_error_json
-from service_response import Errors
-from service_response import service_response_playlist_json
+from src.spotify_requests import SpotifyRequests
+from src.service_response import service_response_error_json
+from src.service_response import Errors
+from src.service_response import service_response_playlist_json
 
 
 class Recommender:
-    def __init__(self, config: ConfigParser):
-        self._config = config
+    def __init__(self, spotify_requests: SpotifyRequests):
+        self._sr = spotify_requests
 
-    def get_playlist(self, auth_token, location):
+    def get_playlist(self, location: str):
         error_no = 0
 
         try:
-            error_no = Errors.CouldNotInitializeSpotipy
-            spotify = Spotify(self._config, auth_token)
-
             error_no = Errors.CouldNotFindPlaylists
-            playlists = spotify.find_playlists(location, 1)
+            playlists = self._sr.find_playlists(location, 1)
 
             error_no = Errors.CouldNotFindSongsFromPlaylist
             playlist_id = playlists["playlists"]["items"][0]["id"]
-            song_list = spotify.find_songs(playlist_id, 10)
+            song_list = self._sr.find_songs(playlist_id, 10)
 
             error_no = Errors.CouldNotFormatSongListToJson
             return self.get_playlist_json(song_list, location)
         except:
             return service_response_error_json(error_no.value)
-
 
     def get_playlist_json(self, song_list, location):
         # Find the track ID of every track in the dict, and add them to an array

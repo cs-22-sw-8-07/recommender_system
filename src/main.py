@@ -1,53 +1,24 @@
-import configparser
-import os
-import sys, getopt
-from configparser import ConfigParser
-from typing import Optional
+import sys
 from recommender import Recommender
-from enum import Enum
 from service_response import Errors, service_response_error_json
-
-
-class QuackLocationType(Enum):
-    unknown = 0
-    church = 1
-    education = 2
-    cemetery = 3
-    forest = 4
-    beach = 5
-    urban = 6
-    night_life = 7
-
-
-def _load_config() -> Optional[ConfigParser]:
-    base_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
-    config_file = os.path.join(base_folder, "config.cnf")
-
-    if not os.path.exists(config_file) or not os.path.isfile(config_file):
-        return None
-
-    config = configparser.ConfigParser()
-    config.read(config_file, encoding='utf-8')
-
-    return config
+from src.quack_location_type import QuackLocationType
+from src.spotify_requests import SpotifyRequests
 
 
 def main(args):
-    config = _load_config()
-    if config is None:
-        print(service_response_error_json(Errors.NoConfigFile))
-        sys.exit()
-
     error_no = 0
     try:
+        error_no = Errors.CouldNotInitializeSpotipy
+        sr = SpotifyRequests(args[0])
+
         error_no = Errors.QuackLocationTypeNotWithinRange
         location = QuackLocationType(int(args[1]))
     except:
         print(service_response_error_json(error_no.value))
         sys.exit()
 
-    rec = Recommender(config)
-    result = rec.get_playlist(args[0], location.name)
+    rec = Recommender(sr)
+    result = rec.get_playlist(location.name)
     print(result)
     return 0
 

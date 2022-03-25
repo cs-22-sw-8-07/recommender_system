@@ -30,4 +30,4 @@ def service_response_playlist_json(tracks, location):
         "is_successful": 1,
         "error_no": 0
     }
-    return json.dumps(parsed_result, indent=4)
+    return json.dumps(parsed_result)
