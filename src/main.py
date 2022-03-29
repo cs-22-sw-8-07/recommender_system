@@ -1,8 +1,8 @@
 import sys
 from recommender import Recommender
 from service_response import Errors, service_response_error_json
-from src.quack_location_type import QuackLocationType
-from src.spotify_requests import SpotifyRequests
+from quack_location_type import QuackLocationType
+from spotify_requests import SpotifyRequests
 
 
 def main(args):

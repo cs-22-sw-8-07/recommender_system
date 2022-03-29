@@ -1,7 +1,7 @@
-from src.spotify_requests import SpotifyRequests
-from src.service_response import service_response_error_json
-from src.service_response import Errors
-from src.service_response import service_response_playlist_json
+from spotify_requests import SpotifyRequests
+from service_response import service_response_error_json
+from service_response import Errors
+from service_response import service_response_playlist_json
 
 
 class Recommender:
