@@ -1,8 +1,7 @@
-from copy import copy
-from typing import Any
+import ast
 import pandas
 import numpy as np
-from pandas import DataFrame, Series
+from pandas import DataFrame
 
 
 class Track:
@@ -65,30 +64,30 @@ class VectorSpaceModel:
         line = 1
         values_in_vec = 0
 
-        for f in self._data.values:
+        for v in self._data.values:
             line += 1
             track = Track()
             track.line_no = line
-            track.id = f[0]
-            track.name = f[1]
-            track.popularity = f[2]
-            track.duration_ms = f[3]
-            track.explicit = f[4]
-            track.artists = f[5]
-            track.id_artists = f[6]
-            track.release_date = f[7]
-            track.danceability = f[8]
-            track.energy = f[9]
-            track.key = f[10]
-            track.loudness = f[11]
-            track.mode = f[12]
-            track.speechiness = f[13]
-            track.acousticness = f[14]
-            track.instrumentalness = f[15]
-            track.liveness = f[16]
-            track.valence = f[17]
-            track.tempo = f[18]
-            track.time_signature = f[19]
+            track.id = v[0]
+            track.name = v[1]
+            track.popularity = v[2]
+            track.duration_ms = v[3]
+            track.explicit = v[4]
+            track.artists = ast.literal_eval(v[5])
+            track.id_artists = ast.literal_eval(v[6])
+            track.release_date = v[7]
+            track.danceability = v[8]
+            track.energy = v[9]
+            track.key = v[10]
+            track.loudness = v[11]
+            track.mode = v[12]
+            track.speechiness = v[13]
+            track.acousticness = v[14]
+            track.instrumentalness = v[15]
+            track.liveness = v[16]
+            track.valence = v[17]
+            track.tempo = v[18]
+            track.time_signature = v[19]
             track.vec = track.org_attributes_as_vec()
             self._tracks.append(track)
             values_in_vec = len(track.vec)

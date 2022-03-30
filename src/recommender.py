@@ -1,4 +1,4 @@
-from spotify_requests import SpotifyRequests
+from feature_vector import FeatureVector
 from service_response import service_response_error_json
 from service_response import Errors
 from service_response import service_response_playlist_json
@@ -6,9 +6,8 @@ from vector_space_model import VectorSpaceModel
 
 
 class Recommender:
-    def __init__(self, spotify_requests: SpotifyRequests):
-        self._sr = spotify_requests
-        self._feature_vecs = {"forest": [0.3314020000000001, 0.3492549999999999, -18.01141, 0.07096000000000002, 0.7168996, 0.5430275521000002, 0.3319970000000001, 0.1, 110.28479999999998]}
+    def __init__(self, feature_vec: FeatureVector):
+        self._feature_vec = feature_vec
         self._vsm = VectorSpaceModel()
         self._vsm.load_csv(r"C:\Users\Jeppe\Downloads\archive\tracks.csv")
 
@@ -17,7 +16,7 @@ class Recommender:
 
         try:
             error_no = Errors.CouldNotFindClosestTracks
-            tracks = self._vsm.closest_tracks(self._feature_vecs[location])
+            tracks = self._vsm.closest_tracks(self._feature_vec[location])
 
             error_no = Errors.CouldNotFormatSongListToJson
             return self.get_playlist_json(tracks, location)
@@ -29,10 +28,10 @@ class Recommender:
         tracks_formatted = []
         for track in tracks:
             # Add all artists to one string, comma seperated
-            #artist_list = []
-            #for artist in track.artists:
-            #    artist_list.append(artist)
-            #artists = ", ".join(artist_list)
+            artist_list = []
+            for artist in track.artists:
+                artist_list.append(artist)
+            artists = ", ".join(artist_list)
 
             # Find the image URL of the smallest available cover art image
             #images = item["track"]["album"]["images"]
@@ -43,7 +42,7 @@ class Recommender:
             track_dict = {
                 "id": track.id,
                 "name": track.name,
-                "artist": track.artists,
+                "artist": artists,
                 # "image": image_url
                 "image": "none"
             }
