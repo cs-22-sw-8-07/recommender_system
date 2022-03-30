@@ -1,3 +1,5 @@
+from copy import copy
+from typing import Any
 import pandas
 import numpy as np
 from pandas import DataFrame, Series
@@ -25,29 +27,46 @@ class Track:
     valence: float
     tempo: float
     time_signature: int
+    vec: []
 
-    def as_vec(self):
-        return np.array((self.danceability,
-                         self.energy,
-                         self.loudness,
-                         self.speechiness,
-                         self.acousticness,
-                         self.instrumentalness,
-                         self.liveness,
-                         self.valence,
-                         self.tempo))
+    def normalize_vec(self, min_vec, max_vec):
+        for i in range(0, len(self.vec)):
+            if max_vec[i] - min_vec[i] == 0:
+                continue
+
+            self.vec[i] = (self.vec[i] - min_vec[i])/(max_vec[i] - min_vec[i])
+
+
+    def org_attributes_as_vec(self):
+        return [self.danceability,
+                self.energy,
+                self.loudness,
+                self.speechiness,
+                self.acousticness,
+                self.instrumentalness,
+                self.liveness,
+                self.valence,
+                self.tempo]
+
+    def as_np_vec(self):
+        return np.array(self.vec)
 
 
 class VectorSpaceModel:
     def __init__(self):
         self._data: DataFrame = None
-        self._tracks: Track = []
+        self._tracks = []
+        self._min_vec = []
+        self._max_vec = []
 
     def load_csv(self, csv_path: str):
         self._data = pandas.read_csv(csv_path)
         self._tracks = []
-        line = 0
+        line = 1
+        values_in_vec = 0
+
         for f in self._data.values:
+            line += 1
             track = Track()
             track.line_no = line
             track.id = f[0]
@@ -70,14 +89,31 @@ class VectorSpaceModel:
             track.valence = f[17]
             track.tempo = f[18]
             track.time_signature = f[19]
+            track.vec = track.org_attributes_as_vec()
             self._tracks.append(track)
-            line += 1
+            values_in_vec = len(track.vec)
+
+        # Normalize values in vectors
+        self._min_vec = [9999.0 for _ in range(0, values_in_vec)]
+        self._max_vec = [-9999.0 for _ in range(0, values_in_vec)]
+        for i in range(0, len(self._tracks)):
+            for j in range(0, len(self._tracks[i].vec)):
+                if self._min_vec[j] > self._tracks[i].vec[j]:
+                    self._min_vec[j] = self._tracks[i].vec[j]
+                if self._max_vec[j] < self._tracks[i].vec[j]:
+                    self._max_vec[j] = self._tracks[i].vec[j]
+
+        for t in self._tracks:
+            t.normalize_vec(self._min_vec, self._max_vec)
 
     def _compare_euclidian(self, track_1: Track, track_2: Track) -> float:
-        return np.linalg.norm(track_1.as_vec() - track_2.as_vec())
+        return np.linalg.norm(track_1.as_np_vec() - track_2.as_np_vec())
 
     def closest_tracks(self, track: Track, amount: int = 10):
-        sorted_tracks = sorted(self._tracks, key=lambda t: self._compare_euclidian(t, track))
+        track_cpy = copy(track)
+        track_cpy.vec = track_cpy.org_attributes_as_vec()
+        track_cpy.normalize_vec(self._min_vec, self._max_vec)
+        sorted_tracks = sorted(self._tracks, key=lambda t: self._compare_euclidian(t, track_cpy))
         return sorted_tracks[0:amount]
 
 

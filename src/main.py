@@ -10,17 +10,19 @@ def main(args):
     # Test block
     vsm = VectorSpaceModel()
     vsm.load_csv(r"C:\Users\Jeppe\Downloads\archive\tracks.csv")
-    track = Track()
-    track.danceability = 0.298
-    track.energy = 0.46
-    track.loudness = -18.645
-    track.speechiness = 0.453
-    track.acousticness = 0.521
-    track.instrumentalness = 0.856
-    track.liveness = 0.436
-    track.valence = 0.402
-    track.tempo = 87.921
+    track = Track() # Metallica - Seek and Destroy
+    track.danceability = 0.445
+    track.energy = 0.964
+    track.loudness = -5.493
+    track.speechiness = 0.282
+    track.acousticness = 0.037
+    track.instrumentalness = 0.0132
+    track.liveness = 0.0773
+    track.valence = 0.448
+    track.tempo = 140.817
     result = vsm.closest_tracks(track)
+    for r in result:
+        print(r.name, r.artists, r.vec)
     return 0
     # Test block
 
