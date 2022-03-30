@@ -109,11 +109,11 @@ class VectorSpaceModel:
     def _compare_euclidian(self, track_1: Track, track_2: Track) -> float:
         return np.linalg.norm(track_1.as_np_vec() - track_2.as_np_vec())
 
-    def closest_tracks(self, track: Track, amount: int = 10):
-        track_cpy = copy(track)
-        track_cpy.vec = track_cpy.org_attributes_as_vec()
-        track_cpy.normalize_vec(self._min_vec, self._max_vec)
-        sorted_tracks = sorted(self._tracks, key=lambda t: self._compare_euclidian(t, track_cpy))
+    def closest_tracks(self, feature_vec: [], amount: int = 10):
+        track = Track()
+        track.vec = feature_vec
+        track.normalize_vec(self._min_vec, self._max_vec)
+        sorted_tracks = sorted(self._tracks, key=lambda t: self._compare_euclidian(t, track))
         return sorted_tracks[0:amount]
 
 
