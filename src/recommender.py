@@ -33,17 +33,11 @@ class Recommender:
                 artist_list.append(artist)
             artists = ", ".join(artist_list)
 
-            # Find the image URL of the smallest available cover art image
-            #images = item["track"]["album"]["images"]
-            #images_sorted = sorted(images, key=lambda d: d["width"])
-            #image_url = images_sorted[0]["url"]
-
             # Format the track with the necessary info
             track_dict = {
                 "id": track.id,
                 "name": track.name,
                 "artist": artists,
-                # "image": image_url
                 "image": "none"
             }
             tracks_formatted.append(track_dict)
