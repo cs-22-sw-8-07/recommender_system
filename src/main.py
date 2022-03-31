@@ -6,12 +6,9 @@ from quack_location_type import QuackLocationType
 
 
 def main(args):
-    # Test block
-    args = ["BQD6BivurQGnmIeJ3CrnBuUxKelc_Z-KCQWWymkTigilwXtgzfNyCzQbYmZxVkwXDJOE2jK6k-c_A8mattgxArDMfWcU5wY4nHsvKMT-KVvJi3FSev1njMOVIiVoBQQR2lgh1FD79xd1G2l89bL25uTmVlVqrFxC","4" ]
-    # Test block
     error_no = 0
     try:
-        error_no = Errors.CouldNotInitializeSpotipy
+        error_no = Errors.CouldNotInitializeVectorSpace
         feature_vec = FeatureVector()
 
         error_no = Errors.QuackLocationTypeArgumentNotANumber

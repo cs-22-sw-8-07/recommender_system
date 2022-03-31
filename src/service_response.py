@@ -6,11 +6,12 @@ from enum import Enum
 class Errors(Enum):
     NoConfigFile = 105
     CouldNotInitializeSpotipy = 110
-    CouldNotFindClosestTracks = 111
-    CouldNotFindSongsFromPlaylist = 112
-    CouldNotFormatSongListToJson = 113
-    QuackLocationTypeArgumentNotANumber = 114
-    QuackLocationTypeNotWithinRange = 115
+    CouldNotInitializeVectorSpace = 111
+    CouldNotFindClosestTracks = 112
+    CouldNotFindSongsFromPlaylist = 113
+    CouldNotFormatSongListToJson = 114
+    QuackLocationTypeArgumentNotANumber = 115
+    QuackLocationTypeNotWithinRange = 116
 
 
 def service_response_error_json(error_no):
