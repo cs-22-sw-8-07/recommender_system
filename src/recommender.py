@@ -6,10 +6,9 @@ from vector_space_model import VectorSpaceModel
 
 
 class Recommender:
-    def __init__(self, feature_vec: FeatureVector):
+    def __init__(self, feature_vec: FeatureVector, vsm: VectorSpaceModel):
         self._feature_vec = feature_vec
-        self._vsm = VectorSpaceModel()
-        self._vsm.load_csv(r"C:\Users\Jeppe\Downloads\archive\tracks.csv")
+        self._vsm = vsm
 
     def get_playlist(self, location: str):
         error_no = 0
