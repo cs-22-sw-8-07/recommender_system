@@ -1,4 +1,5 @@
 import pandas
+import copy
 
 
 class TrackData:
@@ -26,12 +27,18 @@ class TrackData:
     def keys(self):
         return list(self._dict.keys())
 
+    def tracks_in_key(self, key: str):
+        return len(self._dict[key])
+
     def size_of_vecs(self) -> int:
         return len(list(self._dict.values())[0][0])
 
+    def copy_dict(self):
+        return copy.copy(self._dict)
+
     def _normalize(self):
         size_of_vecs = self.size_of_vecs()
-        track_values = self._values()
+        track_values = self._vectors()
 
         self._min_vec = [9999.0 for _ in range(0, size_of_vecs)]
         self._max_vec = [-9999.0 for _ in range(0, size_of_vecs)]
@@ -50,7 +57,7 @@ class TrackData:
 
                     self._dict[key][i][j] = (self._dict[key][i][j] - self._min_vec[j])/(self._max_vec[j] - self._min_vec[j])
 
-    def _values(self):
+    def _vectors(self):
         # Flattens a structure [[1, 2], [3, 4]] -> [1, 2, 3, 4]
         return [val for values in self._dict.values() for val in values]
 

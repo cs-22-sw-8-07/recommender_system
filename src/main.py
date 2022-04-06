@@ -28,7 +28,7 @@ def main(args):
     config = load_config()
 
     # Test block
-    range_model = RangeModel()
+    range_model = RangeModel(config)
     # Test block
 
     error_no = 0
