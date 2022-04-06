@@ -43,34 +43,6 @@ class RangeModel:
             for i in range(0, self._no_of_range_attributes):
                 range_attribute[key][difference[key].index(sorted_diff[i])] = True
 
-        for key in self._track_data.keys():
-            # Traverse in reverse order
-            for i in range(len(track_data_agg[key]) - 1, -1, -1):
-                for j in range(0, len(track_data_agg[key][i])):
-                    if track_data_agg[key][i][j] < bottom_range_dict[key][j] or \
-                            track_data_agg[key][i][j] > top_range_dict[key][j]:
-                        track_data_agg[key].pop(i)
-                        break
-
-        for key in self._track_data.keys():
-            difference[key] = [0 for _ in range(0, size_of_vecs)]
-            top_range_dict[key] = [1 for _ in range(0, size_of_vecs)]
-            for i in range(0, size_of_vecs):
-                sorted_vars = sorted(track_data_agg[key], key=lambda v: v[i])
-                bottom_range_dict[key][i] = sorted_vars[int(self._track_data.tracks_in_key(key)*self._slice_percentage)][i]
-                top_range_dict[key][i] = sorted_vars[int(self._track_data.tracks_in_key(key)*1-self._slice_percentage)][i]
-
-        for key in self._track_data.keys():
-            self._min_dict[key] = [9999.0 for _ in range(0, size_of_vecs)]
-            self._max_dict[key] = [-9999.0 for _ in range(0, size_of_vecs)]
-
-            for i in range(0, len(track_data_agg[key])):
-                for j in range(0, len(track_data_agg[key][i])):
-                    if self._min_dict[key][j] > track_data_agg[key][i][j]:
-                        self._min_dict[key][j] = track_data_agg[key][i][j]
-                    if self._max_dict[key][j] < track_data_agg[key][i][j]:
-                        self._max_dict[key][j] = track_data_agg[key][i][j]
-
     def get_tracks(self, location_type: QuackLocationType):
         pass
 
