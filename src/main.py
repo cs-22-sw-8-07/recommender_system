@@ -29,6 +29,8 @@ def main(args):
 
     # Test block
     range_model = RangeModel(config)
+    range_model.load_track_csv(r"C:\Users\Jeppe\Downloads\archive_kaggle\tracks.csv")
+    range_model.get_tracks(QuackLocationType.church)
     # Test block
 
     error_no = 0

@@ -33,8 +33,11 @@ class TrackData:
     def size_of_vecs(self) -> int:
         return len(list(self._dict.values())[0][0])
 
-    def copy_dict(self):
-        return copy.copy(self._dict)
+    def normalize_vec(self, attribute_vec: list):
+        for i in range(0, len(attribute_vec)):
+            if self._max_vec[i] == self._min_vec[i]:
+                continue
+            attribute_vec[i] = (attribute_vec[i] - self._min_vec[i])/(self._max_vec[i] - self._min_vec[i])
 
     def _normalize(self):
         size_of_vecs = self.size_of_vecs()
@@ -51,11 +54,7 @@ class TrackData:
 
         for key in self._dict.keys():
             for i in range(0, len(self._dict[key])):
-                for j in range(0, len(self._dict[key][i])):
-                    if self._max_vec[j] == self._min_vec[j]:
-                        continue
-
-                    self._dict[key][i][j] = (self._dict[key][i][j] - self._min_vec[j])/(self._max_vec[j] - self._min_vec[j])
+                self.normalize_vec(self._dict[key][i])
 
     def _vectors(self):
         # Flattens a structure [[1, 2], [3, 4]] -> [1, 2, 3, 4]
