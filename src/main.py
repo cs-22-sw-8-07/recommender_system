@@ -3,9 +3,11 @@ import sys
 from configparser import ConfigParser
 from typing import Optional
 from feature_vector import FeatureVector
+from range_model import RangeModel
 from recommender import Recommender
 from service_response import Errors, service_response_error_json
 from quack_location_type import QuackLocationType
+from track_data import TrackData
 from vector_space_model import VectorSpaceModel
 
 
@@ -24,6 +26,10 @@ def load_config() -> Optional[ConfigParser]:
 
 def main(args):
     config = load_config()
+
+    # Test block
+    range_model = RangeModel()
+    # Test block
 
     error_no = 0
     try:
