@@ -2,10 +2,11 @@ import os
 import sys
 from configparser import ConfigParser
 from typing import Optional
-from distance_model.feature_vector import FeatureVector
 from recommender import Recommender
 from service_response import Errors, service_response_error_json
 from quack_location_type import QuackLocationType
+from range_model.range_model import RangeModel
+from distance_model.feature_vector import FeatureVector
 from distance_model.vector_space_model import VectorSpaceModel
 
 
@@ -24,6 +25,13 @@ def load_config() -> Optional[ConfigParser]:
 
 def main(args):
     config = load_config()
+
+    # Test block
+    range_model = RangeModel(config)
+    range_model.load_track_csv(r"C:\Users\Jeppe\Downloads\archive_kaggle\tracks.csv")
+    range_model.get_tracks(QuackLocationType.church)
+    return 0
+    # Test block
 
     error_no = 0
     try:

@@ -1,5 +1,4 @@
 import pandas
-import copy
 
 
 class TrackData:

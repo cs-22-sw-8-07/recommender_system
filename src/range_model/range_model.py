@@ -1,10 +1,11 @@
 import ast
 import os
 import pandas
+import numpy as np
 from configparser import ConfigParser
 from track import Track
 from quack_location_type import QuackLocationType
-from track_data import TrackData
+from range_model.track_data import TrackData
 
 
 class RangeModel:
@@ -14,10 +15,10 @@ class RangeModel:
         self._track_data = TrackData()
         self._bottom_range = {}
         self._top_range = {}
+        self._average = {}
         self._range_attribute_priority = {}
         self._tracks = []
         self._data = None
-        self._tracks = []
 
         base_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../..")
         path = os.path.join(base_folder, "resources", "CompleteIndividualTrackData.csv")
@@ -27,6 +28,7 @@ class RangeModel:
     def _create_ranges(self):
         self._bottom_range = {}
         self._top_range = {}
+        self._average = {}
         self._range_attribute_priority = {}
         difference = {}
         size_of_vecs = self._track_data.size_of_vecs()
@@ -34,19 +36,20 @@ class RangeModel:
         for key in self._track_data.keys():
             self._bottom_range[key] = [0 for _ in range(0, size_of_vecs)]
             self._top_range[key] = [1 for _ in range(0, size_of_vecs)]
+            self._average[key] = [0.5 for _ in range(0, size_of_vecs)]
             difference[key] = [0 for _ in range(0, size_of_vecs)]
             for i in range(0, size_of_vecs):
                 sorted_vars = sorted(self._track_data[key], key=lambda v: v[i])
                 self._bottom_range[key][i] = sorted_vars[int(self._track_data.tracks_in_key(key) * self._slice_pct)][i]
                 self._top_range[key][i] = sorted_vars[int(self._track_data.tracks_in_key(key) * 1 - self._slice_pct)][i]
+                self._average[key][i] = sum([vec[i] for vec in self._track_data[key]])/len(self._track_data[key])
                 difference[key][i] = self._top_range[key][i] - self._bottom_range[key][i]
 
         for key in self._track_data.keys():
-            self._range_attribute_priority[key] = [0 for _ in range(0, size_of_vecs)]
+            self._range_attribute_priority[key] = [False for _ in range(0, size_of_vecs)]
             sorted_diff = sorted(difference[key])
-            self._range_attribute_priority[key][difference[key].index(sorted_diff[0])] = 2
-            for i in range(1, self._no_of_range_attributes):
-                self._range_attribute_priority[key][difference[key].index(sorted_diff[i])] = 1
+            for i in range(0, self._no_of_range_attributes):
+                self._range_attribute_priority[key][difference[key].index(sorted_diff[i])] = True
 
     def load_track_csv(self, csv_path: str):
         self._data = pandas.read_csv(csv_path)
@@ -79,6 +82,19 @@ class RangeModel:
                 return False
         return True
 
+    def _range_sort_euclidian_distance(self, vec, key: str):
+        vec_compare = []
+        avg_compare = []
+
+        for i in range(0, len(vec)):
+            if not self._range_attribute_priority[key][i]:
+                continue
+
+            vec_compare.append(vec[i])
+            avg_compare.append(self._average[key][i])
+
+        return np.linalg.norm(np.array([vec_compare]) - np.array([avg_compare]))
+
     def get_tracks(self, location_type: QuackLocationType):
         key = location_type.name
 
@@ -92,9 +108,6 @@ class RangeModel:
             filter_bottom[i] = self._bottom_range[key][i]
             filter_top[i] = self._top_range[key][i]
 
-        filtered = list(filter(lambda track: self._range_filter(track.attribute_vec, filter_bottom, filter_top), self._tracks))
-        sort = list(sorted(filtered, key=lambda track: track.popularity, reverse=True))[0:10]
+        filtered = filter(lambda track: self._range_filter(track.attribute_vec, filter_bottom, filter_top), self._tracks)
+        sort = list(sorted(filtered, key=lambda track: self._range_sort_euclidian_distance(track.attribute_vec, key)))[0:10]
         print("Bla")
-
-
-
