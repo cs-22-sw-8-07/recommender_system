@@ -1,8 +1,8 @@
-from feature_vector import FeatureVector
+from distance_model.feature_vector import FeatureVector
 from service_response import service_response_error_json
 from service_response import Errors
 from service_response import service_response_playlist_json
-from vector_space_model import VectorSpaceModel
+from distance_model.vector_space_model import VectorSpaceModel
 
 
 class Recommender:

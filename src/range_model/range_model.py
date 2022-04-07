@@ -19,7 +19,7 @@ class RangeModel:
         self._data = None
         self._tracks = []
 
-        base_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
+        base_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../..")
         path = os.path.join(base_folder, "resources", "CompleteIndividualTrackData.csv")
         self._track_data.load_csv(path)
         self._create_ranges()
