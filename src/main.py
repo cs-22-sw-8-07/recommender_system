@@ -2,11 +2,11 @@ import os
 import sys
 from configparser import ConfigParser
 from typing import Optional
-from feature_vector import FeatureVector
+from distance_model.feature_vector import FeatureVector
 from recommender import Recommender
 from service_response import Errors, service_response_error_json
 from quack_location_type import QuackLocationType
-from vector_space_model import VectorSpaceModel
+from distance_model.vector_space_model import VectorSpaceModel
 
 
 def load_config() -> Optional[ConfigParser]:

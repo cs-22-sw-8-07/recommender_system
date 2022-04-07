@@ -1,59 +1,12 @@
 import ast
 import pandas
 import numpy as np
-from pandas import DataFrame
-
-
-class Track:
-    line_no: int
-    id: str
-    name: str
-    popularity: float
-    duration_ms: int
-    explicit: bool
-    artists: []
-    id_artists: []
-    release_date: str
-    danceability: float
-    energy: float
-    key: float
-    loudness: float
-    mode: int
-    speechiness: float
-    acousticness: float
-    instrumentalness: float
-    liveness: float
-    valence: float
-    tempo: float
-    time_signature: int
-    vec: []
-
-    def normalize_vec(self, min_vec, max_vec):
-        for i in range(0, len(self.vec)):
-            if max_vec[i] - min_vec[i] == 0:
-                continue
-
-            self.vec[i] = (self.vec[i] - min_vec[i])/(max_vec[i] - min_vec[i])
-
-
-    def org_attributes_as_vec(self):
-        return [self.danceability,
-                self.energy,
-                self.loudness,
-                self.speechiness,
-                self.acousticness,
-                self.instrumentalness,
-                self.liveness,
-                self.valence,
-                self.tempo]
-
-    def as_np_vec(self):
-        return np.array(self.vec)
+from track import Track
 
 
 class VectorSpaceModel:
     def __init__(self):
-        self._data: DataFrame = None
+        self._data: pandas.DataFrame = None
         self._tracks = []
         self._min_vec = []
         self._max_vec = []
