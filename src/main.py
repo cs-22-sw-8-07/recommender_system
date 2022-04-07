@@ -30,10 +30,6 @@ def main(args):
         error_no = Errors.NoConfigFile
         config = load_config()
 
-        # Test block
-        args = ["range", "5"]
-        # Test block
-
         error_no = Errors.QuackLocationTypeArgumentNotANumber
         loc = int(args[1])
 
