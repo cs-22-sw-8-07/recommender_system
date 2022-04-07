@@ -20,7 +20,7 @@ class RangeModel:
         self._tracks = []
         self._data = None
 
-        base_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../..")
+        base_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..")
         path = os.path.join(base_folder, "resources", "CompleteIndividualTrackData.csv")
         self._track_data.load_csv(path)
         self._create_ranges()
@@ -110,4 +110,4 @@ class RangeModel:
 
         filtered = filter(lambda track: self._range_filter(track.attribute_vec, filter_bottom, filter_top), self._tracks)
         sort = list(sorted(filtered, key=lambda track: self._range_sort_euclidian_distance(track.attribute_vec, key)))[0:10]
-        print("Bla")
+        return sort

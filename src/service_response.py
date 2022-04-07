@@ -5,6 +5,7 @@ from enum import Enum
 
 class Errors(Enum):
     NoConfigFile = 105
+    CouldNotInitializeRecommender = 109
     CouldNotInitializeSpotipy = 110
     CouldNotInitializeVectorSpace = 111
     CouldNotFindClosestTracks = 112
@@ -12,6 +13,10 @@ class Errors(Enum):
     CouldNotFormatSongListToJson = 114
     QuackLocationTypeArgumentNotANumber = 115
     QuackLocationTypeNotWithinRange = 116
+    CouldNotFindTracksFromRangeRecommender = 117
+    CouldNotInitializeRangeModel = 118
+    CouldNotLoadDataSet = 118
+    CouldNotInitializeVectorSpaceModel = 111
 
 
 def service_response_error_json(error_no):

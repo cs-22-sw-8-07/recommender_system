@@ -1,5 +1,5 @@
-[VECTOR_SPACE_MODEL]
-path_csv=C:\Users\Jeppe\Downloads\archive\tracks.csv
+[RECOMMENDER]
+dataset_csv=C:\Users\Jeppe\Downloads\archive_kaggle\tracks.csv
 [RANGE_MODEL]
 slice_percentage=0.45
 no_of_range_attributes=4
