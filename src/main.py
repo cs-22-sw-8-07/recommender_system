@@ -36,7 +36,7 @@ def main(args):
         error_no = Errors.QuackLocationTypeNotWithinRange
         location = QuackLocationType(loc)
 
-        match args[0]:
+        match args[2]:
             case "distance":
                 error_no = Errors.CouldNotInitializeVectorSpace
                 feature_vec = FeatureVector()
