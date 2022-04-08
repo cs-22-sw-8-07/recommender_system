@@ -15,14 +15,17 @@ class Errors(Enum):
     QuackLocationTypeNotWithinRange = 116
     CouldNotFindTracksFromRangeRecommender = 117
     CouldNotInitializeRangeModel = 118
-    CouldNotLoadDataSet = 118
-    CouldNotInitializeVectorSpaceModel = 111
+    CouldNotLoadDataSet = 119
+    CouldNotInitializeVectorSpaceModel = 120
+    Argument3NotGiven = 121
+    Argument3NotARecommender = 122
 
 
-def service_response_error_json(error_no):
+def service_response_error_json(error_no: int):
     parsed_result = {
         "is_successful": 0,
-        "error_no": error_no
+        "error_no": error_no,
+        "error_msg": Errors(error_no).name
     }
     return json.dumps(parsed_result, indent=4)
 

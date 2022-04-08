@@ -1,3 +1,6 @@
+import numpy as np
+
+
 class Track:
     line_no: int
     id: str
@@ -14,10 +17,11 @@ class Track:
     attribute_vec: []
 
     def normalize_vec(self, min_vec, max_vec):
-        raise Exception("Deprecated")
+        for i in range(0, len(self.attribute_vec)):
+            if max_vec[i] - min_vec[i] == 0:
+                continue
 
-    def org_attributes_as_vec(self):
-        raise Exception("Deprecated")
+            self.attribute_vec[i] = (self.attribute_vec[i] - min_vec[i])/(max_vec[i] - min_vec[i])
 
     def as_np_vec(self):
-        raise Exception("Deprecated")
+        return np.array(self.attribute_vec)

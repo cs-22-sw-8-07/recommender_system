@@ -25,6 +25,11 @@ def load_config() -> ConfigParser:
 
 def main(args):
     error_no = 0
+    base_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
+
+    # Test block
+    args = ["asd", "4", "distance"]
+    # Test block
 
     try:
         error_no = Errors.NoConfigFile
@@ -36,10 +41,13 @@ def main(args):
         error_no = Errors.QuackLocationTypeNotWithinRange
         location = QuackLocationType(loc)
 
+        error_no = Errors.Argument3NotGiven
         match args[2]:
             case "distance":
                 error_no = Errors.CouldNotInitializeVectorSpace
                 feature_vec = FeatureVector()
+                path = os.path.join(base_folder, "resources", "allLocationFeatureVector.csv")
+                feature_vec.load_feature_vectors(path)
 
                 error_no = Errors.CouldNotInitializeVectorSpaceModel
                 vsm = VectorSpaceModel()
@@ -56,6 +64,9 @@ def main(args):
 
                 error_no = Errors.CouldNotInitializeRecommender
                 rec = RangeRecommender(range_model)
+            case _:
+                error_no = Errors.Argument3NotARecommender
+                raise Exception("Argument3NotARecommender")
     except:
         print(service_response_error_json(error_no.value))
         sys.exit()

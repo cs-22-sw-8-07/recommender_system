@@ -12,11 +12,12 @@ class DistanceRecommender(Recommender):
         self._vsm = vsm
 
     def get_playlist(self, location: QuackLocationType):
+        key = location.name
         error_no = 0
 
         try:
             error_no = Errors.CouldNotFindClosestTracks
-            tracks = self._vsm.closest_tracks(self._feature_vec[location])
+            tracks = self._vsm.closest_tracks(self._feature_vec[key])
 
             error_no = Errors.CouldNotFormatSongListToJson
             return self._get_playlist_json(tracks, location)

@@ -29,31 +29,21 @@ class VectorSpaceModel:
             track.artists = ast.literal_eval(v[5])
             track.id_artists = ast.literal_eval(v[6])
             track.release_date = v[7]
-            track.danceability = v[8]
-            track.energy = v[9]
-            track.key = v[10]
-            track.loudness = v[11]
-            track.mode = v[12]
-            track.speechiness = v[13]
-            track.acousticness = v[14]
-            track.instrumentalness = v[15]
-            track.liveness = v[16]
-            track.valence = v[17]
-            track.tempo = v[18]
+            track.attribute_vec = [v[8], v[9], v[11]]
+            track.attribute_vec.extend(v[13:19])
             track.time_signature = v[19]
-            track.vec = track.org_attributes_as_vec()
             self._tracks.append(track)
-            values_in_vec = len(track.vec)
+            values_in_vec = len(track.attribute_vec)
 
         # Normalize values in vectors
         self._min_vec = [9999.0 for _ in range(0, values_in_vec)]
         self._max_vec = [-9999.0 for _ in range(0, values_in_vec)]
         for i in range(0, len(self._tracks)):
-            for j in range(0, len(self._tracks[i].vec)):
-                if self._min_vec[j] > self._tracks[i].vec[j]:
-                    self._min_vec[j] = self._tracks[i].vec[j]
-                if self._max_vec[j] < self._tracks[i].vec[j]:
-                    self._max_vec[j] = self._tracks[i].vec[j]
+            for j in range(0, len(self._tracks[i].attribute_vec)):
+                if self._min_vec[j] > self._tracks[i].attribute_vec[j]:
+                    self._min_vec[j] = self._tracks[i].attribute_vec[j]
+                if self._max_vec[j] < self._tracks[i].attribute_vec[j]:
+                    self._max_vec[j] = self._tracks[i].attribute_vec[j]
 
         for t in self._tracks:
             t.normalize_vec(self._min_vec, self._max_vec)
@@ -63,7 +53,7 @@ class VectorSpaceModel:
 
     def closest_tracks(self, feature_vec: [], amount: int = 10):
         track = Track()
-        track.vec = feature_vec
+        track.attribute_vec = feature_vec
         track.normalize_vec(self._min_vec, self._max_vec)
         sorted_tracks = sorted(self._tracks, key=lambda t: self._compare_euclidian(t, track))
         return sorted_tracks[0:amount]
