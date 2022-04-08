@@ -19,6 +19,7 @@ class Errors(Enum):
     CouldNotInitializeVectorSpaceModel = 120
     Argument3NotGiven = 121
     Argument3NotARecommender = 122
+    CouldNotLoadTrackData = 123
 
 
 def service_response_error_json(error_no: int):

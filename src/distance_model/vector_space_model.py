@@ -1,7 +1,6 @@
-import ast
 import pandas
 import numpy as np
-from track import Track
+from track import Track, load_track_csv
 
 
 class VectorSpaceModel:
@@ -11,29 +10,9 @@ class VectorSpaceModel:
         self._min_vec = []
         self._max_vec = []
 
-    def load_csv(self, csv_path: str):
-        self._data = pandas.read_csv(csv_path)
-        self._tracks = []
-        line = 1
-        values_in_vec = 0
-
-        for v in self._data.values:
-            line += 1
-            track = Track()
-            track.line_no = line
-            track.id = v[0]
-            track.name = v[1]
-            track.popularity = v[2]
-            track.duration_ms = v[3]
-            track.explicit = v[4]
-            track.artists = ast.literal_eval(v[5])
-            track.id_artists = ast.literal_eval(v[6])
-            track.release_date = v[7]
-            track.attribute_vec = [v[8], v[9], v[11]]
-            track.attribute_vec.extend(v[13:19])
-            track.time_signature = v[19]
-            self._tracks.append(track)
-            values_in_vec = len(track.attribute_vec)
+    def load_track_csv(self, csv_path: str):
+        self._data, self._tracks = load_track_csv(csv_path)
+        values_in_vec = len(self._tracks[0].attribute_vec)
 
         # Normalize values in vectors
         self._min_vec = [9999.0 for _ in range(0, values_in_vec)]

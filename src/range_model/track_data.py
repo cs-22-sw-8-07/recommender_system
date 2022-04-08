@@ -34,7 +34,7 @@ class TrackData:
 
     def normalize_vec(self, attribute_vec: list):
         for i in range(0, len(attribute_vec)):
-            if self._max_vec[i] == self._min_vec[i]:
+            if abs(self._max_vec[i]) == abs(self._min_vec[i]):
                 continue
             attribute_vec[i] = (attribute_vec[i] - self._min_vec[i])/(self._max_vec[i] - self._min_vec[i])
 

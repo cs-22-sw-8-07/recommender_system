@@ -1,6 +1,7 @@
 import os
 import sys
-from configparser import ConfigParser
+from config import load_config
+from range_model.track_data import TrackData
 from service_response import Errors, service_response_error_json
 from quack_location_type import QuackLocationType
 from range_model.range_model import RangeModel
@@ -8,19 +9,6 @@ from distance_model.feature_vector import FeatureVector
 from distance_model.vector_space_model import VectorSpaceModel
 from distance_model.distance_recommender import DistanceRecommender
 from range_model.range_recommender import RangeRecommender
-
-
-def load_config() -> ConfigParser:
-    base_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
-    config_file = os.path.join(base_folder, "config.cnf")
-
-    if not os.path.exists(config_file) or not os.path.isfile(config_file):
-        raise Exception("No config file")
-
-    config = ConfigParser()
-    config.read(config_file, encoding='utf-8')
-
-    return config
 
 
 def main(args):
@@ -33,7 +21,7 @@ def main(args):
 
     try:
         error_no = Errors.NoConfigFile
-        config = load_config()
+        config = load_config("config.cnf")
 
         error_no = Errors.QuackLocationTypeArgumentNotANumber
         loc = int(args[1])
@@ -51,13 +39,18 @@ def main(args):
 
                 error_no = Errors.CouldNotInitializeVectorSpaceModel
                 vsm = VectorSpaceModel()
-                vsm.load_csv(config.get('RECOMMENDER', 'dataset_csv'))
+                vsm.load_track_csv(config.get('RECOMMENDER', 'dataset_csv'))
 
                 error_no = Errors.CouldNotInitializeRecommender
                 rec = DistanceRecommender(feature_vec, vsm)
             case "range":
+                error_no = Errors.CouldNotLoadTrackData
+                track_data = TrackData()
+                path = os.path.join(base_folder, "resources", "CompleteIndividualTrackData.csv")
+                track_data.load_csv(path)
+
                 error_no = Errors.CouldNotInitializeRangeModel
-                range_model = RangeModel(config)
+                range_model = RangeModel(config, track_data)
 
                 error_no = Errors.CouldNotLoadDataSet
                 range_model.load_track_csv(config.get('RECOMMENDER', 'dataset_csv'))
