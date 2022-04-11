@@ -15,10 +15,6 @@ def main(args):
     error_no = 0
     base_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 
-    # Test block
-    args = ["asd", "4", "distance"]
-    # Test block
-
     try:
         error_no = Errors.NoConfigFile
         config = load_config("config.cnf")
