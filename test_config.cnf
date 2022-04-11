@@ -1,5 +1,5 @@
 [RECOMMENDER]
-dataset_csv=C:\Users\Jeppe\Downloads\archive_kaggle\tracks.csv
+dataset_csv=<unused>
 [RANGE_MODEL]
 slice_percentage=0.20
 no_of_range_attributes=2
