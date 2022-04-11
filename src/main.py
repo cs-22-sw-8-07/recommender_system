@@ -1,49 +1,66 @@
 import os
 import sys
-from configparser import ConfigParser
-from typing import Optional
-from distance_model.feature_vector import FeatureVector
-from recommender import Recommender
+from config import load_config
+from range_model.track_data import TrackData
 from service_response import Errors, service_response_error_json
 from quack_location_type import QuackLocationType
+from range_model.range_model import RangeModel
+from distance_model.feature_vector import FeatureVector
 from distance_model.vector_space_model import VectorSpaceModel
-
-
-def load_config() -> Optional[ConfigParser]:
-    base_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
-    config_file = os.path.join(base_folder, "config.cnf")
-
-    if not os.path.exists(config_file) or not os.path.isfile(config_file):
-        return None
-
-    config = ConfigParser()
-    config.read(config_file, encoding='utf-8')
-
-    return config
+from distance_model.distance_recommender import DistanceRecommender
+from range_model.range_recommender import RangeRecommender
 
 
 def main(args):
-    config = load_config()
-
     error_no = 0
-    try:
-        error_no = Errors.CouldNotInitializeVectorSpace
-        feature_vec = FeatureVector()
+    base_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 
-        vsm = VectorSpaceModel()
-        vsm.load_csv(config.get('VECTOR_SPACE_MODEL', 'path_csv'))
+    try:
+        error_no = Errors.NoConfigFile
+        config = load_config("config.cnf")
 
         error_no = Errors.QuackLocationTypeArgumentNotANumber
         loc = int(args[1])
 
         error_no = Errors.QuackLocationTypeNotWithinRange
         location = QuackLocationType(loc)
+
+        error_no = Errors.Argument3NotGiven
+        match args[2]:
+            case "distance":
+                error_no = Errors.CouldNotInitializeVectorSpace
+                feature_vec = FeatureVector()
+                path = os.path.join(base_folder, "resources", "allLocationFeatureVector.csv")
+                feature_vec.load_feature_vectors(path)
+
+                error_no = Errors.CouldNotInitializeVectorSpaceModel
+                vsm = VectorSpaceModel()
+                vsm.load_track_csv(config.get('RECOMMENDER', 'dataset_csv'))
+
+                error_no = Errors.CouldNotInitializeRecommender
+                rec = DistanceRecommender(feature_vec, vsm)
+            case "range":
+                error_no = Errors.CouldNotLoadTrackData
+                track_data = TrackData()
+                path = os.path.join(base_folder, "resources", "CompleteIndividualTrackData.csv")
+                track_data.load_csv(path)
+
+                error_no = Errors.CouldNotInitializeRangeModel
+                range_model = RangeModel(config, track_data)
+
+                error_no = Errors.CouldNotLoadDataSet
+                range_model.load_track_csv(config.get('RECOMMENDER', 'dataset_csv'))
+
+                error_no = Errors.CouldNotInitializeRecommender
+                rec = RangeRecommender(range_model)
+            case _:
+                error_no = Errors.Argument3NotARecommender
+                raise Exception("Argument3NotARecommender")
     except:
         print(service_response_error_json(error_no.value))
         sys.exit()
 
-    rec = Recommender(feature_vec, vsm)
-    result = rec.get_playlist(location.name)
+    result = rec.get_playlist(location)
     print(result)
     return 0
 

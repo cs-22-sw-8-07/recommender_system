@@ -1,28 +1,15 @@
-from distance_model.feature_vector import FeatureVector
-from service_response import service_response_error_json
-from service_response import Errors
+from quack_location_type import QuackLocationType
 from service_response import service_response_playlist_json
-from distance_model.vector_space_model import VectorSpaceModel
 
 
 class Recommender:
-    def __init__(self, feature_vec: FeatureVector, vsm: VectorSpaceModel):
-        self._feature_vec = feature_vec
-        self._vsm = vsm
+    def __init__(self):
+        pass
 
-    def get_playlist(self, location: str):
-        error_no = 0
+    def get_playlist(self, location: QuackLocationType):
+        raise Exception("Cannot call base class")
 
-        try:
-            error_no = Errors.CouldNotFindClosestTracks
-            tracks = self._vsm.closest_tracks(self._feature_vec[location])
-
-            error_no = Errors.CouldNotFormatSongListToJson
-            return self.get_playlist_json(tracks, location)
-        except:
-            return service_response_error_json(error_no.value)
-
-    def get_playlist_json(self, tracks, location):
+    def _get_playlist_json(self, tracks, location: QuackLocationType):
         # Find the track ID of every track in the dict, and add them to an array
         tracks_formatted = []
         for track in tracks:
@@ -41,4 +28,4 @@ class Recommender:
             }
             tracks_formatted.append(track_dict)
 
-        return service_response_playlist_json(tracks_formatted, location)
+        return service_response_playlist_json(tracks_formatted, location.name)
