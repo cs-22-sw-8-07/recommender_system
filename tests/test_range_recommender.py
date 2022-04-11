@@ -26,7 +26,7 @@ class TestRangeRecommender(TestCase):
         self.recommender = RangeRecommender(range_model)
 
     def test_get_playlist__church(self):
-        expected_result_str = """{"result": {"location_type": "church", "tracks": [{"id": "0IA0Hju8CAgYfV1hwhidBH", "name": "Church Song 8", "artist": "Artist 8", "image": "none"}, {"id": "0Dd9ImXtAtGwsmsAD69KZT", "name": "Church Song 7", "artist": "Artist 7", "image": "none"}, {"id": "0IgI1UCz84pYeVetnl1lGP", "name": "Church Song 9", "artist": "Artist 9", "image": "none"}, {"id": "0BRXJHRNGQ3W4v9frnSfhu", "name": "Church Song 6", "artist": "Artist 6", "image": "none"}, {"id": "0JV4iqw2lSKJaHBQZ0e5zK", "name": "Church Song 10", "artist": "Artist 10", "image": "none"}, {"id": "08y9GfoqCWfOGsKdwojr5e", "name": "Church Song 5", "artist": "Artist 5", "image": "none"}]}, "is_successful": 1, "error_no": 0}"""
+        expected_result_str = """{"result": {"location_type": "church", "tracks": [{"id": "0BRXJHRNGQ3W4v9frnSfhu", "name": "Church Song 6", "artist": "Artist 6", "image": "none"}, {"id": "08y9GfoqCWfOGsKdwojr5e", "name": "Church Song 5", "artist": "Artist 5", "image": "none"}, {"id": "0Dd9ImXtAtGwsmsAD69KZT", "name": "Church Song 7", "artist": "Artist 7", "image": "none"}, {"id": "0IA0Hju8CAgYfV1hwhidBH", "name": "Church Song 8", "artist": "Artist 8", "image": "none"}]}, "is_successful": 1, "error_no": 0}"""
         expected_result_json = json.loads(expected_result_str)
 
         result_str = self.recommender.get_playlist(QuackLocationType.church)
