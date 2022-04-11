@@ -1,4 +1,13 @@
 # recommender_system
 
-You need to download the config file that Jeppe uploaded on discord and then make sure that test_mode=false.
-Additionally if it can't find the config file you can remove the .. in the basefolder in order to make it an abosulte path.
+To customize the config file and make it point at the correct file in your filesystem, add the following line to (hidden folder) `.git/info/exclude` :
+
+```
+config.cnf
+```
+
+And then run the following command:
+
+```
+git update-index --assume-unchanged config.cnf
+```
