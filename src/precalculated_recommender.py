@@ -11,7 +11,7 @@ class PrecalcTrack:
     id = ""
     name = ""
     artists = []
-    image = ""
+    image = "none"
 
 
 class PrecalculatedRecommender(Recommender):
@@ -42,7 +42,8 @@ class PrecalculatedRecommender(Recommender):
                 track.id = row[0]
                 track.name = row[1]
                 track.artists = row[2].split(";")
-                track.image = row[3]
+                if len(row) > 3:
+                    track.image = row[3]
                 formatted_tracks.append(track)
 
             error_no = Errors.CouldNotFormatSongListToJson
