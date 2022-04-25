@@ -1,4 +1,3 @@
-import os
 import sys
 from config import load_config
 from precalculated_recommender import PrecalculatedRecommender
@@ -8,8 +7,7 @@ from quack_location_type import QuackLocationType
 
 def main(args):
     error_no = 0
-    amount = 10
-    offset = 0
+    previous_offsets = []
 
     try:
         error_no = Errors.NoConfigFile
@@ -25,23 +23,21 @@ def main(args):
         match args[2]:
             case "distance" | "range":
                 error_no = Errors.CouldNotInitializeRecommender
-                rec = PrecalculatedRecommender(args[2])
+                rec = PrecalculatedRecommender(config, args[2])
             case _:
                 error_no = Errors.Argument3NotARecommender
                 raise Exception("Argument3NotARecommender")
 
-        error_no = Errors.Argument4NotANumber
+        error_no = Errors.Argument4IncorrectFormat
         if len(args) > 2:
-            amount = int(args[3])
-
-        error_no = Errors.Argument5NotANumber
-        if len(args) > 3:
-            offset = int(args[4])
+            offsets_str = args[3].split(";")
+            for offset in offsets_str:
+                previous_offsets.append(int(offset))
     except:
         print(service_response_error_json(error_no.value))
         sys.exit()
 
-    result = rec.get_playlist(location, amount, offset)
+    result = rec.get_playlist(location, previous_offsets)
     print(result)
     return 0
 

@@ -22,7 +22,7 @@ class Errors(Enum):
     CouldNotLoadTrackData = 123
     CouldNotReadPrecalculatedDataSet = 124
     CouldNotTransformCSVIntoCorrectFormat = 125
-    Argument4NotANumber = 126
+    Argument4IncorrectFormat = 126
     Argument5NotANumber = 127
 
 
@@ -35,10 +35,10 @@ def service_response_error_json(error_no: int):
     return json.dumps(parsed_result, indent=4)
 
 
-def service_response_playlist_json(tracks, location):
+def service_response_playlist_json(tracks, location, offset: int):
     parsed_result = {
         "result": {
-            "id": str(uuid.uuid4()),
+            "offset": offset,
             "location_type": location,
             "tracks": tracks
         },

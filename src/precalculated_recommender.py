@@ -1,7 +1,7 @@
 import os
 import pandas
+from configparser import ConfigParser
 from pandas.errors import EmptyDataError
-
 from quack_location_type import QuackLocationType
 from recommender import Recommender
 from service_response import Errors, service_response_error_json
@@ -15,11 +15,13 @@ class PrecalcTrack:
 
 
 class PrecalculatedRecommender(Recommender):
-    def __init__(self, recommender_type: str):
+    def __init__(self, config: ConfigParser, recommender_type: str):
+        self._config = config
+        self._page_size = self._config.getint("PRECALCULATED_RECOMMENDER", "page_size")
         self._recommender_type = recommender_type
         super().__init__()
 
-    def get_playlist(self, location: QuackLocationType, amount: int = 10, offset: int = 0):
+    def get_playlist(self, location: QuackLocationType, previous_offsets: list):
         error_no = 0
 
         try:
@@ -29,11 +31,23 @@ class PrecalculatedRecommender(Recommender):
             tracks_file = self._get_csv_file_name(location)
             path = os.path.join(base_folder, "resources", recommender_tracks_folder, tracks_file)
 
-            try:
-                data = pandas.read_csv(path, header=None, skiprows=offset, nrows=amount)
-                values = data.values
-            except EmptyDataError:
-                values = []
+            if len(previous_offsets) == 0:
+                target_page = 0
+            else:
+                target_page = max(previous_offsets) + 1
+            offset = target_page * self._page_size
+
+            while True:
+                try:
+                    data = pandas.read_csv(path, header=None, skiprows=offset, nrows=self._page_size)
+                    values = data.values
+                    break
+                except EmptyDataError:
+                    if offset == 0:
+                        values = []
+                        break
+                    offset = 0
+                    target_page = 0
 
             error_no = Errors.CouldNotTransformCSVIntoCorrectFormat
             formatted_tracks = []
@@ -47,7 +61,7 @@ class PrecalculatedRecommender(Recommender):
                 formatted_tracks.append(track)
 
             error_no = Errors.CouldNotFormatSongListToJson
-            return self._get_playlist_json(formatted_tracks, location)
+            return self._get_playlist_json(formatted_tracks, location, target_page)
         except:
             return service_response_error_json(error_no.value)
 
