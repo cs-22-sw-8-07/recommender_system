@@ -1,5 +1,7 @@
 import os
 import pandas
+from pandas.errors import EmptyDataError
+
 from quack_location_type import QuackLocationType
 from recommender import Recommender
 from service_response import Errors, service_response_error_json
@@ -27,11 +29,15 @@ class PrecalculatedRecommender(Recommender):
             tracks_file = self._get_csv_file_name(location)
             path = os.path.join(base_folder, "resources", recommender_tracks_folder, tracks_file)
 
-            data = pandas.read_csv(path, header=None, skiprows=offset, nrows=amount)
+            try:
+                data = pandas.read_csv(path, header=None, skiprows=offset, nrows=amount)
+                values = data.values
+            except EmptyDataError:
+                values = []
 
             error_no = Errors.CouldNotTransformCSVIntoCorrectFormat
             formatted_tracks = []
-            for row in data.values:
+            for row in values:
                 track = PrecalcTrack()
                 track.id = row[0]
                 track.name = row[1]
