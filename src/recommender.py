@@ -6,7 +6,7 @@ class Recommender:
     def __init__(self):
         pass
 
-    def get_playlist(self, location: QuackLocationType, amount: int, offset: int):
+    def get_playlist(self, location: QuackLocationType, amount: int = 10, offset: int = 0):
         raise Exception("Cannot call base class")
 
     def _get_playlist_json(self, tracks, location: QuackLocationType):
@@ -24,7 +24,7 @@ class Recommender:
                 "id": track.id,
                 "name": track.name,
                 "artist": artists,
-                "image": "none"
+                "image": track.image
             }
             tracks_formatted.append(track_dict)
 

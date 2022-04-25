@@ -20,6 +20,10 @@ class Errors(Enum):
     Argument3NotGiven = 121
     Argument3NotARecommender = 122
     CouldNotLoadTrackData = 123
+    CouldNotReadPrecalculatedDataSet = 124
+    CouldNotTransformCSVIntoCorrectFormat = 125
+    Argument4NotANumber = 126
+    Argument5NotANumber = 127
 
 
 def service_response_error_json(error_no: int):
