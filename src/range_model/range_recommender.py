@@ -9,12 +9,12 @@ class RangeRecommender(Recommender):
         super().__init__()
         self._range_model = range_model
 
-    def get_playlist(self, location: QuackLocationType):
+    def get_playlist(self, location: QuackLocationType, amount: int, offset: int):
         error_no = 0
 
         try:
             error_no = Errors.CouldNotFindTracksFromRangeRecommender
-            tracks = self._range_model.get_tracks(location)
+            tracks = self._range_model.get_tracks(location, amount, offset)
 
             error_no = Errors.CouldNotFormatSongListToJson
             return self._get_playlist_json(tracks, location)

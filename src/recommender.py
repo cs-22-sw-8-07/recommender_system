@@ -6,7 +6,7 @@ class Recommender:
     def __init__(self):
         pass
 
-    def get_playlist(self, location: QuackLocationType):
+    def get_playlist(self, location: QuackLocationType, amount: int, offset: int):
         raise Exception("Cannot call base class")
 
     def _get_playlist_json(self, tracks, location: QuackLocationType):
