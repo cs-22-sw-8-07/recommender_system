@@ -27,7 +27,7 @@ class PrecalculatedRecommender(Recommender):
             tracks_file = self._get_csv_file_name(location)
             path = os.path.join(base_folder, "resources", recommender_tracks_folder, tracks_file)
 
-            data = pandas.read_csv(path, skiprows=offset, nrows=amount)
+            data = pandas.read_csv(path, header=None, skiprows=offset, nrows=amount)
 
             error_no = Errors.CouldNotTransformCSVIntoCorrectFormat
             formatted_tracks = []
