@@ -1,6 +1,6 @@
 import json
-import uuid
 from enum import Enum
+from quack_location_type import QuackLocationType
 
 
 class Errors(Enum):
@@ -20,6 +20,10 @@ class Errors(Enum):
     Argument3NotGiven = 121
     Argument3NotARecommender = 122
     CouldNotLoadTrackData = 123
+    CouldNotReadPrecalculatedDataSet = 124
+    CouldNotTransformCSVIntoCorrectFormat = 125
+    Argument4IncorrectFormat = 126
+    Argument5NotANumber = 127
 
 
 def service_response_error_json(error_no: int):
@@ -31,11 +35,11 @@ def service_response_error_json(error_no: int):
     return json.dumps(parsed_result, indent=4)
 
 
-def service_response_playlist_json(tracks, location):
+def service_response_playlist_json(tracks, location: QuackLocationType, offset: int):
     parsed_result = {
         "result": {
-            "id": str(uuid.uuid4()),
-            "location_type": location,
+            "offset": offset,
+            "location_type": location.value,
             "tracks": tracks
         },
         "is_successful": 1,

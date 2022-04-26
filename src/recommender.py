@@ -6,10 +6,10 @@ class Recommender:
     def __init__(self):
         pass
 
-    def get_playlist(self, location: QuackLocationType):
+    def get_playlist(self, location: QuackLocationType, previous_offsets: list):
         raise Exception("Cannot call base class")
 
-    def _get_playlist_json(self, tracks, location: QuackLocationType):
+    def _get_playlist_json(self, tracks, location: QuackLocationType, offset: int):
         # Find the track ID of every track in the dict, and add them to an array
         tracks_formatted = []
         for track in tracks:
@@ -24,8 +24,8 @@ class Recommender:
                 "id": track.id,
                 "name": track.name,
                 "artist": artists,
-                "image": "none"
+                "image": track.image
             }
             tracks_formatted.append(track_dict)
 
-        return service_response_playlist_json(tracks_formatted, location.name)
+        return service_response_playlist_json(tracks_formatted, location, offset)
