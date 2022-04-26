@@ -29,7 +29,7 @@ def main(args):
                 raise Exception("Argument3NotARecommender")
 
         error_no = Errors.Argument4IncorrectFormat
-        if len(args) >= 3:
+        if len(args) > 3:
             offsets_str = args[3].split(";")
             for offset in offsets_str:
                 previous_offsets.append(int(offset))
