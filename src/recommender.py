@@ -28,4 +28,4 @@ class Recommender:
             }
             tracks_formatted.append(track_dict)
 
-        return service_response_playlist_json(tracks_formatted, location.name, offset)
+        return service_response_playlist_json(tracks_formatted, location, offset)
