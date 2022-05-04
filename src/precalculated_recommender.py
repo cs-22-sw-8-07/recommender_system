@@ -56,6 +56,10 @@ class PrecalculatedRecommender(Recommender):
                     target_page = 0
                     continue
 
+            if len(values) == 0:
+                error_no = Errors.NoTracksInTargetLocation
+                raise Exception
+
             error_no = Errors.CouldNotTransformCSVIntoCorrectFormat
             formatted_tracks = []
             for row in values:

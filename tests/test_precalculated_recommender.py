@@ -39,6 +39,24 @@ class TestPrecalculatedRecommender(TestCase):
 
         self.assertEqual(expected_result_json, result_json)
 
+    def test_get_playlist__forest_offset_out_of_range(self):
+        expected_result_str = """{"result": {"offset": 0, "location_type": 4, "tracks": [{"id": "4tKpJR6k6rANU8dEE74jqW", "name": "Forest Track 01", "artist": "Artist 01", "image": "https://i.scdn.co/image/ab67616d00004851d4fcda9a09f59fa1394e7a43"}, {"id": "2ffDtMWivVnr4Z3kNBda8y", "name": "Forest Track 02", "artist": "Artist 02", "image": "https://i.scdn.co/image/ab67616d00004851ae259c2d7863335b5fb5040b"}, {"id": "4KEDJUs8n2Fk0EY7a6DHd1", "name": "Forest Track 03", "artist": "Artist 03", "image": "https://i.scdn.co/image/ab67616d000048517ab1b51f3a37b29b782b3e94"}, {"id": "1BVF4c964LEMZTH5FTgF7Y", "name": "Forest Track 04", "artist": "Artist 04", "image": "https://i.scdn.co/image/ab67616d00004851195de9e8d2f7eec205025726"}, {"id": "0HUmIBR5vEcL7E3cbjo3Hh", "name": "Forest Track 05", "artist": "Artist 05", "image": "https://i.scdn.co/image/ab67616d00004851801dcfaa97db998cf6e9766e"}, {"id": "449Q8hJDTgx41QX5gKlLEb", "name": "Forest Track 06", "artist": "Artist 06", "image": "https://i.scdn.co/image/ab67616d00004851c6797d2be95f29e697ddf664"}, {"id": "1C5HpiqUgOY7v5audtXeXa", "name": "Forest Track 07", "artist": "Artist 07", "image": "https://i.scdn.co/image/ab67616d00004851564f4fd1da117b9d43e4784b"}, {"id": "05k4IbZ6GqPpAw0Gi64hWN", "name": "Forest Track 08", "artist": "Artist 08", "image": "https://i.scdn.co/image/ab67616d00004851d269c5893083edc669c215e2"}, {"id": "3jkcGBQGiMQbh8r1am6UWE", "name": "Forest Track 09", "artist": "Artist 09", "image": "https://i.scdn.co/image/ab67616d00004851734d441bde333305c42a0796"}, {"id": "3IFEbjQqyHgc7saidYSdUI", "name": "Forest Track 10", "artist": "Artist 10", "image": "https://i.scdn.co/image/ab67616d0000485161cfadfbc0632bb33463c040"}]}, "is_successful": 1, "error_no": 0}"""
+        expected_result_json = json.loads(expected_result_str)
+
+        result_str = self.recommender.get_playlist(QuackLocationType.forest, [0, 1, 2, 3])
+        result_json = json.loads(result_str)
+
+        self.assertEqual(expected_result_json, result_json)
+
+    def test_get_playlist__beach_no_data(self):
+        expected_result_str = """{"is_successful": 0,"error_no": 128,"error_msg": "NoTracksInTargetLocation"}"""
+        expected_result_json = json.loads(expected_result_str)
+
+        result_str = self.recommender.get_playlist(QuackLocationType.beach, [])
+        result_json = json.loads(result_str)
+
+        self.assertEqual(expected_result_json, result_json)
+
     def test_get_folder_name__distance(self):
         expected_result = "distance_recommender_tracks"
 
@@ -52,6 +70,14 @@ class TestPrecalculatedRecommender(TestCase):
         result = self.recommender._get_folder_name("range")
 
         self.assertEqual(expected_result, result)
+
+    def test_get_folder_name__unknown(self):
+        try:
+            self.recommender._get_folder_name("unknown")
+        except:
+            return
+
+        self.fail()
 
     def test_get_csv_file_name__forest(self):
         expected_result = "forest_tracks.csv"
