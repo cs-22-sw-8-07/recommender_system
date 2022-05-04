@@ -24,6 +24,7 @@ class Errors(Enum):
     CouldNotTransformCSVIntoCorrectFormat = 125
     Argument4IncorrectFormat = 126
     Argument5NotANumber = 127
+    NoTracksInTargetLocation = 128
 
 
 def service_response_error_json(error_no: int):

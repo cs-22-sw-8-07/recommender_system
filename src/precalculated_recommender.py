@@ -16,26 +16,32 @@ class PrecalcTrack:
 
 class PrecalculatedRecommender(Recommender):
     def __init__(self, config: ConfigParser, recommender_type: str):
+        super().__init__()
         self._config = config
         self._page_size = self._config.getint("PRECALCULATED_RECOMMENDER", "page_size")
         self._recommender_type = recommender_type
-        super().__init__()
+        self.test_mode = False
 
     def get_playlist(self, location: QuackLocationType, previous_offsets: list):
         error_no = 0
 
         try:
             error_no = Errors.CouldNotReadPrecalculatedDataSet
-            base_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
+            base_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), os.path.pardir)
             recommender_tracks_folder = self._get_folder_name(self._recommender_type)
             tracks_file = self._get_csv_file_name(location)
-            path = os.path.join(base_folder, "resources", recommender_tracks_folder, tracks_file)
+            if not self.test_mode:
+                resources_folder = "resources"
+            else:
+                resources_folder = os.path.join("tests", "test_resources")
+            path = os.path.join(base_folder, resources_folder, recommender_tracks_folder, tracks_file)
 
             if len(previous_offsets) == 0:
                 target_page = 0
             else:
                 target_page = max(previous_offsets) + 1
             offset = target_page * self._page_size
+            values = []
 
             while True:
                 try:
@@ -48,6 +54,11 @@ class PrecalculatedRecommender(Recommender):
                         break
                     offset = 0
                     target_page = 0
+                    continue
+
+            if len(values) == 0:
+                error_no = Errors.NoTracksInTargetLocation
+                raise Exception
 
             error_no = Errors.CouldNotTransformCSVIntoCorrectFormat
             formatted_tracks = []
