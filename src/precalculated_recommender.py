@@ -78,7 +78,7 @@ class PrecalculatedRecommender(Recommender):
 
     def _get_folder_name(self, recommender_type: str):
         match recommender_type:
-            case "distance" | "range":
+            case "distance" | "range" | "machine":
                 return recommender_type + "_recommender_tracks"
             case _:
                 raise Exception("Not a recommender type")
