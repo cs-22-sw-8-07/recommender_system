@@ -24,6 +24,9 @@ def main(args):
             case "distance" | "range":
                 error_no = Errors.CouldNotInitializeRecommender
                 rec = PrecalculatedRecommender(config, args[2])
+            case "machine":
+                error_no = Errors.CouldNotInitializeRecommender
+                rec = PrecalculatedRecommender(config, args[2])
             case _:
                 error_no = Errors.Argument3NotARecommender
                 raise Exception("Argument3NotARecommender")

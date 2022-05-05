@@ -28,5 +28,5 @@ The format for the arguments of the script is as follows:
 Formats:
 * `access_token`: A string token for Spotify access
 * `location_type`: An integer value for location
-* `recommender_method`: A string that denotes which recommender method to use. Available values are `distance` and `range`
+* `recommender_method`: A string that denotes which recommender method to use. Available values are `distance`, `range` and `machine`
 * `previous_offsets`: (Optional) A list of integers of the format `0;1;2`. Denotes which page offsets have already been returned to the requesting client.
