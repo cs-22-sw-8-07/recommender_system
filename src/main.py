@@ -21,10 +21,7 @@ def main(args):
 
         error_no = Errors.Argument3NotGiven
         match args[2]:
-            case "distance" | "range":
-                error_no = Errors.CouldNotInitializeRecommender
-                rec = PrecalculatedRecommender(config, args[2])
-            case "machine":
+            case "distance" | "range" | "machine":
                 error_no = Errors.CouldNotInitializeRecommender
                 rec = PrecalculatedRecommender(config, args[2])
             case _:
