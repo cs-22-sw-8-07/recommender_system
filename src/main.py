@@ -1,33 +1,46 @@
-import configparser
-import os
-from recommender import Recommender
+import sys
+from config import load_config
+from precalculated_recommender import PrecalculatedRecommender
+from service_response import Errors, service_response_error_json
+from quack_location_type import QuackLocationType
 
 
-def _load_config() -> configparser.ConfigParser:
-    base_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
-    config_file = os.path.join(base_folder, "config.cnf")
+def main(args):
+    error_no = 0
+    previous_offsets = []
 
-    if not os.path.exists(config_file) or not os.path.isfile(config_file):
-        print(f"Config file missing... Path should be {config_file}")
+    try:
+        error_no = Errors.NoConfigFile
+        config = load_config("config.cnf")
 
-    config = configparser.ConfigParser()
-    config.read(config_file, encoding='utf-8')
+        error_no = Errors.QuackLocationTypeArgumentNotANumber
+        loc = int(args[1])
 
-    return config
+        error_no = Errors.QuackLocationTypeNotWithinRange
+        location = QuackLocationType(loc)
 
+        error_no = Errors.Argument3NotGiven
+        match args[2]:
+            case "distance" | "range" | "machine":
+                error_no = Errors.CouldNotInitializeRecommender
+                rec = PrecalculatedRecommender(config, args[2])
+            case _:
+                error_no = Errors.Argument3NotARecommender
+                raise Exception("Argument3NotARecommender")
 
-def main():
-    config = _load_config()
+        error_no = Errors.Argument4IncorrectFormat
+        if len(args) > 3:
+            offsets_str = args[3].split(";")
+            for offset in offsets_str:
+                previous_offsets.append(int(offset))
+    except:
+        print(service_response_error_json(error_no.value))
+        sys.exit()
 
-    rec = Recommender(config)
-
-    playlist_id = rec.find_playlist_id("", "forest")
-    print(playlist_id)
-    song_ids = rec.get_songs("", playlist_id)
-    print(song_ids)
-
+    result = rec.get_playlist(location, previous_offsets)
+    print(result)
     return 0
 
 
 if __name__ == "__main__":
-    main()
+    main(sys.argv[1:])

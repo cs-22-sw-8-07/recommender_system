@@ -1,30 +1,31 @@
-import configparser
-import spotipy
-from spotipy.oauth2 import SpotifyClientCredentials
+from quack_location_type import QuackLocationType
+from service_response import service_response_playlist_json
 
 
 class Recommender:
-    def __init__(self, config: configparser.ConfigParser):
-        self._config = config
-        self._client_id = self._config.get('RECOMMENDER', 'client_id')
-        self._client_secret = self._config.get('RECOMMENDER', 'client_secret')
-        # Authorize via spotify and save the auth token in _sp
-        auth_manager = SpotifyClientCredentials(client_id=self._client_id, client_secret=self._client_secret)
-        self._sp = spotipy.Spotify(auth_manager=auth_manager)
+    def __init__(self):
+        pass
 
-    def find_playlist_id(self, auth_token: str, location: str):
-        # Search for the term "location" and return the first playlist
-        result = self._sp.search(location, type="playlist", limit=1)
-        # Find the ID of the playlist (nested dict)
-        return result["playlists"]["items"][0]["id"]
+    def get_playlist(self, location: QuackLocationType, previous_offsets: list):
+        raise Exception("Cannot call base class")
 
-    def get_songs(self, auth_token: str, playlist_id: str):
-        # Retrieve tracks from the given playlist, only return the track id
-        result = self._sp.playlist_items(playlist_id, fields="items(track(id))", limit=10)
-
+    def _get_playlist_json(self, tracks, location: QuackLocationType, offset: int):
         # Find the track ID of every track in the dict, and add them to an array
-        ids = []
-        for i in result["items"]:
-            ids.append(i["track"]["id"])
+        tracks_formatted = []
+        for track in tracks:
+            # Add all artists to one string, comma seperated
+            artist_list = []
+            for artist in track.artists:
+                artist_list.append(artist)
+            artists = ", ".join(artist_list)
 
-        return ids
+            # Format the track with the necessary info
+            track_dict = {
+                "id": track.id,
+                "name": track.name,
+                "artist": artists,
+                "image": track.image
+            }
+            tracks_formatted.append(track_dict)
+
+        return service_response_playlist_json(tracks_formatted, location, offset)

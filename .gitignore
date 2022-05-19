@@ -3,8 +3,16 @@ bin
 .idea
 
 .cache
-config.cnf
 *.lock
 *.db
 *.db-journal
 
+# Environments
+.env
+.venv
+env/
+venv/
+venv2/
+ENV/
+env.bak/
+venv.bak/
